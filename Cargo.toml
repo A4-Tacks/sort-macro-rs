@@ -1,0 +1,17 @@
+[package]
+name = "sort-macro"
+version = "0.1.0"
+edition = "2024"
+
+authors = ["A4-Tacks <wdsjxhno1001@163.com>"]
+keywords = ["macro", "sort", "macro_rules", "tokens"]
+description = "Sort macro input tokens"
+
+license = "MIT"
+repository = "https://github.com/A4-Tacks/sort-macro-rs"
+readme = "README.md"
+
+[lib]
+proc-macro = true
+
+[dependencies]
