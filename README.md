@@ -9,7 +9,7 @@ macro_rules! foo {
         concat!(stringify!($a), stringify!($b))
     };
     ($($name:ident : $val:literal)+) => {
-        sort_macro::sort_in!({@branch} foo!($( ($name $val) )+))
+        sort_macro::sort_in!([.0] {@branch} foo!($( ($name $val) )+))
     };
 }
 fn main() {
@@ -23,6 +23,9 @@ Grammar
 Sort in last group, sort key is `TokenTree::to_string`
 
 ```abnf
-input  = [prefix] *tt group
+input  = [key] [prefix] *tt group
 prefix = "{" *tt "}"
+key    = "[" *tt "]"
 ```
+
+The key grammar reference: https://github.com/A4-Tacks/tt-path-rs

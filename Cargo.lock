@@ -4,4 +4,13 @@ version = 4
 
 [[package]]
 name = "sort-macro"
+version = "0.2.0"
+dependencies = [
+ "tt-path",
+]
+
+[[package]]
+name = "tt-path"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "840879afa2f31ee16a624cc41cf3f686b0fe91477311e0c2e73e904282b4518e"
