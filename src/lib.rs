@@ -41,17 +41,26 @@ struct Sorter {
 }
 impl Sorter {
     fn finish(self) -> TokenStream {
-        let mut args = self.args.stream().into_iter().collect::<Vec<_>>();
-        args.sort_by_key(|tt| {
-            self.key.apply(tt.clone())
-                .into_iter()
-                .filter_map(Result::ok)
-                .map(|it| it.to_string())
-                .collect::<Vec<_>>()
-        });
-        args.splice(..0, self.prefix);
+        let args = self.args.stream().into_iter()
+            .map(|tt| {
+                let key = self.key.apply(tt.clone())
+                    .into_iter()
+                    .map(|it| it.map(|it| it.to_string()))
+                    .collect::<Result<Vec<_>, _>>();
+                match key {
+                    Ok(key) => Ok((tt, key)),
+                    Err(e) => Err(e),
+                }
+            })
+            .collect::<Result<Vec<_>, _>>();
+        let mut args = match args {
+            Ok(args) => args,
+            Err(e) => return err(e.msg(), e.span()),
+        };
+        args.sort_by(|(_, k1), (_, k2)| k1.cmp(k2));
 
-        let mut sorted_args = Group::new(self.args.delimiter(), TokenStream::from_iter(args));
+        let sorted_args = self.prefix.into_iter().chain(args.into_iter().map(|it| it.0));
+        let mut sorted_args = Group::new(self.args.delimiter(), TokenStream::from_iter(sorted_args));
         sorted_args.set_span(self.args.span());
 
         self.tokens.into_iter()
